@@ -13,16 +13,16 @@ def string_to_targetub(ub_str: str) -> TargetUB:
     match ub_str:
         case "buffer-overflow" | "0" | "(0)":
             return TargetUB.BufferOverflow
-        case "division-by-zero" | "1" | "(1)":
-            return TargetUB.DivideZero
+        case "double-free" | "1" | "(1)":
+            return TargetUB.DoubleFree
         case "null-pointer-dereference" | "2" | "(2)":
             return TargetUB.NullPtrDeref
         case "use-after-free" | "3" | "(3)":
             return TargetUB.UseAfterFree
         case "use-after-scope" | "4" | "(4)":
             return TargetUB.UseAfterScope
-        case "double-free" | "5" | "(5)":
-            return TargetUB.DoubleFree
+        case "division-by-zero" | "5" | "(5)":
+            return TargetUB.DivideZero
         case "integer-overflow" | "6" | "(6)":
             return TargetUB.IntegerOverflow
         case "out-of-bound" | "7" | "(7)":
@@ -94,11 +94,11 @@ if __name__=='__main__':
     parser.add_argument("--ub", required=True, help=\
                         "The type of undefined behavior to synthesize. Supported types are: \
                             (0) buffer-overflow , \
-                            (1) division-by-zero, \
+                            (1) double-free, \
                             (2) null-pointer-dereference, \
                             (3) use-after-free, \
                             (4) use-after-scope, \
-                            (5) double-free, \
+                            (5) division-by-zero, \
                             (6) integer-overflow, \
                             (7) out-of-bound, \
                             (8) use-of-uninit \
