@@ -101,5 +101,5 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
 ```
 
 <p align="center">
-    <a href="https://dl.acm.org/doi/10.1145/3575693.3575707"><img src="https://img.shields.io/badge/Paper-ASPLOS'24-a55fed.svg"></a>
+    <a href="https://shao-hua-li.github.io/files/2024_ASPLOS_UBFUZZ.pdf"><img src="https://img.shields.io/badge/Paper-ASPLOS'24-a55fed.svg"></a>
 </p>
