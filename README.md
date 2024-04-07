@@ -2,7 +2,7 @@
 
 🌟UBGen🌟 is an automated UB program genertor for C. Given a valid C program, UBGen can mutate it to generate programs containing undefined behaviors. For each of the generated UB program, it only contains one kind of undefined behavior at one program location.
 
-UBGen is designed in the research paper **"UBfuzz: Finding Bugs in Sanitizer Implementations" (ASPLOS 2024)**, where UBGen is the program generator for UBfuzz. For the full evaluation of UBfuzz, please find the artifact as stated in the paper.
+UBGen is designed in our research paper **"UBfuzz: Finding Bugs in Sanitizer Implementations" (ASPLOS 2024)**, where UBGen is the program generator for UBfuzz. For the full evaluation of UBfuzz, please find the artifact as stated in the paper.
 
 
 ## Support Undefined Behavior
