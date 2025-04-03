@@ -47,6 +47,13 @@ Alternatively, you can use an integer index to specify the UB. For example, the 
 ./ubgen.py --ub 0 --out ./mutants
 ```
 
+By default, all programs are mutated from csmith. If you want to specify your own seed C file, try `--seed` as follows
+```shell
+./ubgen.py --ub 0 --out ./mutants --seed seed.c
+```
+The seed file `seed.c` is a valid C file without undefined behaviors. Note that, UBGen will not insert UB in the `main()` function. Therefore, please make sure
+that there are other functions in your seed file.
+
 You can use `./ubgen --help` to find detailed help information.
 
 Suppose there are generated programs under `./mutants/` and one of the file is `./mutants/mutated_0_tmp6a83k7sn.c`. All generated files of the same prefix are from the same seed Csmith program.

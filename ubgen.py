@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import argparse, os, requests, zipfile, shutil
 from pathlib import Path
 from synthesizer.synthesizer import Synthesizer
@@ -42,13 +42,12 @@ def install_csmith():
                 f.write(response.content)
         with zipfile.ZipFile(csmith_src_zip, "r") as zip_ref:
             zip_ref.extractall(csmith_src)
-        os.system(f'cd {csmith_src}/csmith-csmith-2.3.0/ && cmake -DCMAKE_INSTALL_PREFIX={csmith_home} . && make && make install')
+        os.system(f'cd {csmith_src}/csmith-csmith-2.3.0/ && cmake -DCMAKE_INSTALL_PREFIX={csmith_home} . && make -j4 && make install')
 
-def check_available_csmith(csmith_home:str="csmith") -> bool:
-    if csmith_home == "csmith":
-        csmith_home = Path(__file__).parent / "csmith_install"
-        if not csmith_home.exists():
-            install_csmith()
+def check_available_csmith() -> bool:
+    csmith_home = Path(__file__).parent / "csmith_install"
+    if not csmith_home.exists():
+        install_csmith()
     with NamedTemporaryFile(suffix=".c", mode="rb", delete=True) as tmp_src:
         ret = os.system(f"{csmith_home}/bin/csmith > {tmp_src.name}")
         if ret != 0:
@@ -69,7 +68,7 @@ def generate_csmith_src() -> str:
         with NamedTemporaryFile(suffix="_csmith.exe", mode="w", delete=False) as f:
             f.close()
             csmith_exe = f.name
-            cmd = f"{CSMITH_HOME}/bin/csmith {CSMITH_USER_OPTIONS} --output {src}"
+            cmd = f"{CSMITH_BIN} {CSMITH_USER_OPTIONS} --output {src}"
             ret = run_cmd(cmd, CSMITH_TIMEOUT, "/dev/null")
             if ret != 0:
                 continue
@@ -104,7 +103,7 @@ if __name__=='__main__':
                             (8) use-of-uninit \
                         ")
     parser.add_argument("--out", type=Path, required=True, help="The output directory to store the synthesized programs.")
-    parser.add_argument("--csmith-home", type=str, default="csmith", help="The path to the csmith home.")
+    parser.add_argument("--seed", type=Path, required=False, help="Specify the seed C program to inject UB.")
 
     args = parser.parse_args()
 
@@ -116,27 +115,41 @@ if __name__=='__main__':
         TOOL_STACKTOHEAP = f'{DYNAMIC_ANALYZER}/tool-stacktoheap --mutate-prob 100' # free statements will only be inserted with p=100
 
     
-    if not check_available_csmith(args.csmith_home):
-        print(f"Cannot find csmith binary at {args.csmith}. Please use --csmith to specify the path to the csmith binary.")
-        exit(1)
+    check_available_csmith()
 
     args.out.mkdir(parents=True, exist_ok=True)
 
     while True:
         with TemporaryDirectory() as tmp_dir:
             SYNER = Synthesizer(prob=100, tmp_dir=tmp_dir, given_ALL_TARGET_UB=[target_ub])
-            src = generate_csmith_src()
+            if args.seed is not None:
+                if not os.path.exists(args.seed):
+                    print(f'The seed file `{args.seed}` does not exist!')
+                    exit(1)
+                
+                if not str(args.seed).endswith(".c"):
+                    print(f'The seed file `{args.seed}` must end with `.c`!')
+                    exit(1)
+                src = str(args.seed)
+            else:
+                src = generate_csmith_src()
+            mutated_files = []
             try:
                 mutated_files = SYNER.synthesizer(src, MUTATE_NUM)
-            except:
-                os.remove(src)
-                continue
-            os.remove(src)
-            if len(mutated_files) == 0:
-                continue
+            except Exception as e:
+                print(f'UBGen failed with {e}')
+            
             for mutated_file in mutated_files:
                 shutil.copy(mutated_file, args.out)
                 os.remove(mutated_file)
+            
+            print(f'{len(mutated_files)} mutants generated and stored in `{args.out}`')
+            if args.seed is not None:
+                break
+            os.remove(src)
+            if len(mutated_files) == 0:
+                print('try again...')
+                continue
         break
 
 

@@ -757,11 +757,11 @@ class Synthesizer:
         """
         Remove instrumentations
         """
-        self.src = re.sub('\/\*I:.*', '', self.src) # remove all instrumented comments
-        self.src = re.sub('int MUT_ARR_\d+ = 0;', '', self.src) # remove all MUT_ARR_id
-        self.src = re.sub('MUT_ARR_\d+\+', '', self.src) # remove all MUT_ARR_id
-        self.src = re.sub('int MUT_PTR_\d+ = 0;', '', self.src) # remove all MUT_ARR_id
-        self.src = re.sub('\+MUT_PTR_\d+', '', self.src) # remove all MUT_ARR_id
+        self.src = re.sub(r'\/\*I:.*', '', self.src) # remove all instrumented comments
+        self.src = re.sub(r'int MUT_ARR_\d+ = 0;', '', self.src) # remove all MUT_ARR_id
+        self.src = re.sub(r'MUT_ARR_\d+\+', '', self.src) # remove all MUT_ARR_id
+        self.src = re.sub(r'int MUT_PTR_\d+ = 0;', '', self.src) # remove all MUT_ARR_id
+        self.src = re.sub(r'\+MUT_PTR_\d+', '', self.src) # remove all MUT_ARR_id
 
     def synthesizer(self, filename, mutated_num=-1):
         """

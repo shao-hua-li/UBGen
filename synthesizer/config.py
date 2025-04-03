@@ -1,17 +1,18 @@
 from enum import Enum, auto
 import os
+from pathlib import Path
 
-CC = "clang-13"
+
+CC = "clang"
 
 # csmith config
-CSMITH_HOME = os.environ['CSMITH_HOME']
-CSMITH_HEADER = f"-I{CSMITH_HOME}/include"
+CSMITH_BIN = f'{Path(__file__).parent.parent}/csmith_install/bin/csmith'
 MIN_PROGRAM_SIZE = 8000 # programs shorter than this many bytes are too boring to test
 CSMITH_TIMEOUT = 10
 CSMITH_USER_OPTIONS = "--no-packed-struct --ccomp --no-volatiles --no-volatile-pointers"
 CSMITH_CHECK_OPTIONS = "-fsanitize=address,undefined -fno-sanitize-recover=all"
 
-COMPILE_ARGS = f" -I{CSMITH_HOME}/include "
+COMPILE_ARGS = f' -I{Path(__file__).parent.parent}/csmith_install/include/csmith-2.3.0 '
 COMPCERT = "ccomp -interp -fstruct-passing "
 
 # mutated configurations for each seed
