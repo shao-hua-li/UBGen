@@ -25,9 +25,8 @@ std::string GetFilenameFromRange(const CharSourceRange &R,
                                 const SourceManager &SM) {
     const std::pair<FileID, unsigned> DecomposedLocation =
         SM.getDecomposedLoc(SM.getSpellingLoc(R.getBegin()));
-    const FileEntry *Entry = SM.getFileEntryForID(DecomposedLocation.first);
-return std::string(Entry ? Entry->getName() : "");
-
+    auto Entry = SM.getFileEntryRefForID(DecomposedLocation.first);
+    return Entry ? std::string(Entry->getName()) : "";
 }
 
 Expected<DynTypedNode> getNode(const ast_matchers::BoundNodes &Nodes,
@@ -70,8 +69,8 @@ void ruleactioncallback::RuleActionCallback::run(
         llvm::errs() << "An error has occured.\n";
         return;
     }
-    Expected<SmallVector<transformer::Edit, 1>> Edits =
-        transformer::detail::findSelectedCase(Result, Rule).Edits(Result);
+    size_t I = transformer::detail::findSelectedCase(Result, Rule);
+    Expected<SmallVector<transformer::Edit, 1>> Edits = Rule.Cases[I].Edits(Result);
     if (!Edits) {
         llvm::errs() << "Rewrite failed: " << llvm::toString(Edits.takeError())
                      << "\n";

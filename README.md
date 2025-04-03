@@ -21,6 +21,7 @@ UBGen is designed in our research paper **"UBfuzz: Finding Bugs in Sanitizer Imp
 ## Quick Start
 
 **Compile dynamic analyzer for analyzing C source code:**
+Please make sure that `LLVM>=18` is installed.
 ```shell
 ./build.sh
 ```
