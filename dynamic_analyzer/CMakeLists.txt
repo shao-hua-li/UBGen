@@ -13,8 +13,12 @@ message(STATUS "Using ClangConfig.cmake in ${Clang_DIR}")
 list(APPEND CMAKE_MODULE_PATH ${CLANG_CMAKE_DIR})
 include(${CLANG_CMAKE_DIR}/AddClang.cmake)
 
-if("${LLVM_VERSION_MAJOR}" VERSION_LESS 13)
-  message(FATAL_ERROR "Found LLVM ${LLVM_VERSION_MAJOR}, but need LLVM >= 13")
+if("${LLVM_VERSION_MAJOR}" VERSION_LESS 18)
+  message(FATAL_ERROR "Found LLVM ${LLVM_VERSION_MAJOR}, but need LLVM >= 18")
+endif()
+
+if("${Clang_VERSION_MAJOR}" VERSION_LESS 18)
+  message(FATAL_ERROR "Found Clang ${Clang_VERSION}, but need Clang >= 18")
 endif()
 
 if (NOT CMAKE_BUILD_TYPE)
