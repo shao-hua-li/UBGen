@@ -502,10 +502,10 @@ class Synthesizer:
             arr_dim = int(self.heap_vars[1][self.heap_vars[0].index(tgt_var_name)])
             if tgt_var_expr.count("*")+tgt_var_expr.count("[") >= arr_dim:
                 return 1
-            new_stmt = f'free({tgt_var_expr});//UBFUZZ'
+            new_stmt = f'free_{arr_dim}({tgt_var_name});//UBFUZZ'
         elif tgt_ub == TargetUB.DoubleFree:
             # malloc-ed array dim
-            new_stmt = f'free({tgt_var_expr});//UBFUZZ'
+            new_stmt = f'free_{arr_dim}({tgt_var_name});//UBFUZZ'
         elif tgt_ub == TargetUB.MemoryLeak:
             free_index = self.src.index(f'/*I:{tgt_var_id}:VARREF_FREE:')
             first_half = self.src[:free_index]
